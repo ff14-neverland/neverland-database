@@ -9,10 +9,7 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="dropzone">
-          上傳檔案：
-          <input type="file" name="file" id="file" accept=".doc,.docx" multiple="multiple">
-        </div>
+        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
       </div>
       <div class="action-buttons">
         <button class="btn btn-primary" v-on:click="startCount">
@@ -27,46 +24,30 @@
 </template>
 
 <script>
-import Uploader from 'vue-upload-component';
+import vue2Dropzone from 'vue2-dropzone';
+import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 export default {
   name: 'Count',
   components: {
-    Uploader
+    vueDropzone: vue2Dropzone
   },
   data(){
     return {
       name: '',
       count: 0,
+      dropzoneOptions: {
+        url: 'http://127.0.0.1:8000',
+        uploadMultiple: true,
+        autoProcessQueue: false,
+        acceptedFiles:'.doc, .docx',
+        headers: {'Access-Control-Allow-Origin': '*'}
+      }
     };
   },
   methods: {
     startCount(){
-      const formData = new FormData();
-      const dropzone = document.getElementById('file');
-      const files = dropzone.files;
-      /*
-      for(let i = 0; i < files.length; i++){
-        const file = files[i];
-        formData.append('file', file);
-      }*/
-      fetch('http://127.0.0.1:8000', {
-        method: 'POST',
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'multipart/form-data',
-        },
-        body: files[0],
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    },
+      this.$refs.myVueDropzone.processQueue();
+    }
   },
 }
 </script>
