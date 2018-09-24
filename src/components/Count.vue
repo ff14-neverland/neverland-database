@@ -5,11 +5,11 @@
       <div class="form-group">
         <label class="col-form-label">輸入角色名：</label>
         <div>
-          <input v-model="name" class="form-control" type="text" value="">
+          <input v-model="name" class="form-control" type="text" value="" required>
         </div>
       </div>
       <div class="form-group">
-        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-sending="onSend"></vue-dropzone>
       </div>
       <div class="action-buttons">
         <button class="btn btn-primary" v-on:click="startCount">
@@ -45,6 +45,9 @@ export default {
     };
   },
   methods: {
+    onSend(file, xhr, formData){
+      formData.append('name', this.name);
+    },
     startCount(){
       this.$refs.myVueDropzone.processQueue();
     }
