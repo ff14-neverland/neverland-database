@@ -9,20 +9,13 @@
         </div>
       </div>
       <div class="form-group">
-        <Uploader ref="upload" v-model="files" :multiple="true" :drop="true" accept=".doc,.docx" :custom-action="startCount" @input-file="inputFile">
-          將要檔案拖到此處或點擊此處上傳：
-          <div class="uploaded-files" v-if="files.length !== 0">
-            已上傳檔案：
-            <ul class="files-list">
-              <li v-for="(file, index) in files" :key="file.id">
-                <span>{{file.name}}</span>
-              </li>
-            </ul>
-          </div>
-        </Uploader>
+        <div class="dropzone">
+          上傳檔案：
+          <input type="file" name="file" id="file" accept=".doc,.docx" multiple="multiple">
+        </div>
       </div>
       <div class="action-buttons">
-        <button class="btn btn-primary" @click.prevent="$refs.upload.active = true">
+        <button class="btn btn-primary" v-on:click="startCount">
           開始統計
         </button>
       </div>
@@ -44,24 +37,35 @@ export default {
     return {
       name: '',
       count: 0,
-      files:[],
     };
   },
   methods: {
-    async startCount(file, component){
-      const response = await fetch('http://127.0.0.1:8000', {method: "POST", body: 'Hello'});
-      let data = await response.json();
-      return data;
-    },
-    inputFile(newFile, oldFile) {
-      if (newFile && oldFile && !newFile.active && oldFile.active) {
-        // 获得相应数据
-        console.log('response', newFile.response)
-        if (newFile.xhr) {
-          //  获得响应状态码
-          console.log('status', newFile.xhr.status)
-        }
-      }
+    startCount(){
+      const formData = new FormData();
+      const dropzone = document.getElementById('file');
+      const files = dropzone.files;
+      /*
+      for(let i = 0; i < files.length; i++){
+        const file = files[i];
+        formData.append('file', file);
+      }*/
+      fetch('http://127.0.0.1:8000', {
+        method: 'POST',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'multipart/form-data',
+        },
+        body: files[0],
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.error(error);
+      });
     },
   },
 }
@@ -71,20 +75,15 @@ export default {
 h1{
   margin-bottom: 1em;
 }
-.file-uploads{
+.dropzone{
   display: block;
-  border: 2px solid #e5e5e5;
   font-family: Arial,sans-serif;
   letter-spacing: .2px;
   color: #777;
   transition: background-color .2s linear;
-  min-height: 150px;
   background: #fff;
-  padding: 20px;
-
-  &:hover{
-    cursor: pointer;
-  }
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .uploaded-files{
