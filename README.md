@@ -1,21 +1,9 @@
-# neverland-database
+# FF Neverland Database
 
-> Database of FF neverland site
+## Neverland是什麼？
+Neverland是最終幻想14的非官方寫作及創作交流群。本專案是專門為此而設的資料庫，同時包括字數統計等功能。
+由Vue負責前端，API由Node.js構建。
 
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Install
+- Node.js version >= v8.9.4
+- yarn install / npm install
