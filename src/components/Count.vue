@@ -9,7 +9,8 @@
         </div>
       </div>
       <div class="form-group">
-        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-sending="onSend"></vue-dropzone>
+      </div>
+        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" @vdropzone-success-multiple="onUploaded" @vdropzone-sending="onSend"></vue-dropzone>
       </div>
       <div class="action-buttons">
         <button class="btn btn-primary" v-on:click="startCount">
@@ -17,7 +18,7 @@
         </button>
       </div>
       <div class="result">
-        統計字數：
+        統計字數： {{count}}
       </div>
     </div>
   </div>
@@ -39,17 +40,31 @@ export default {
         url: 'http://127.0.0.1:8000',
         uploadMultiple: true,
         autoProcessQueue: false,
+        addRemoveLinks: true,
+        dictDefaultMessage: '將檔案拖至此或點擊上傳',
         acceptedFiles:'.doc, .docx',
         headers: {'Access-Control-Allow-Origin': '*'}
       }
     };
   },
   methods: {
+    onUploaded(files, response){
+      //Call word count api, get result and change the default text of dropzone
+      this.count = response.totalCount;
+      this.$refs.myVueDropzone.removeAllFiles();
+      const dropzoneText = document.querySelector('.dz-message span');
+      dropzoneText.textContent = '上載完成！如要繼續統計，請再次將檔案拖至此或點擊上傳';
+    },
     onSend(file, xhr, formData){
       formData.append('name', this.name);
     },
     startCount(){
-      this.$refs.myVueDropzone.processQueue();
+      //If name is empty, alert user and will not start upload
+      if(this.name === ''){
+        alert('請輸入角色姓名！');
+      }else{
+        this.$refs.myVueDropzone.processQueue();
+      }
     }
   },
 }
@@ -59,17 +74,10 @@ export default {
 h1{
   margin-bottom: 1em;
 }
+
 .dropzone{
-  display: block;
-  font-family: Arial,sans-serif;
-  letter-spacing: .2px;
-  color: #777;
-  transition: background-color .2s linear;
-  background: #fff;
-  margin-top: 50px;
   margin-bottom: 50px;
 }
-
 .uploaded-files{
   margin-top: 1em;
 }
@@ -79,6 +87,7 @@ h1{
 }
 
 .result{
+  font-size: 1.5em;
   margin-top: 50px;
 }
 </style>
