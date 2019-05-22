@@ -37,10 +37,11 @@ export default {
       name: '',
       count: 0,
       dropzoneOptions: {
-        url: 'http://127.0.0.1:8000',
+        url: 'http://database.ffneverland.site/count',
         uploadMultiple: true,
         autoProcessQueue: false,
         addRemoveLinks: true,
+        parallelUploads: 100,
         dictDefaultMessage: '將檔案拖至此或點擊上傳',
         acceptedFiles:'.doc, .docx',
         headers: {'Access-Control-Allow-Origin': '*'}
